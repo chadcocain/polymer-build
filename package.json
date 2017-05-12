@@ -7,8 +7,8 @@
   "scripts": {
     "lint": "gulp lint",
     "build": "gulp build",
-    "test": "gulp test",
-    "prepublish": "gulp lint && gulp test",
+    "test": "gulp lint test",
+    "prepublishOnly": "npm test",
     "format": "find src/ -iname '*.ts' -o -iname '*.js' | xargs clang-format --style=file -i"
   },
   "repository": {
