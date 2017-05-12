@@ -22,7 +22,7 @@ import {parseUrl} from 'polymer-analyzer/lib/core/utils';
 import * as logging from 'plylog';
 import {ProjectConfig} from 'polymer-project-config';
 
-import {VinylReaderTransform} from './streams';
+import {VinylReaderTransform, AsyncTransformStream} from './streams';
 import {urlFromPath, pathFromUrl} from './path-transformers';
 
 const logger = logging.getLogger('cli.build.analyzer');
@@ -48,7 +48,7 @@ export interface DepsIndex {
  * important that files are resolved here in a seperate stream, so that analysis
  * and file loading/resolution can't block each other while waiting.
  */
-class ResolveTransform extends Transform {
+class ResolveTransform extends AsyncTransformStream<File, File> {
   private _buildAnalyzer: BuildAnalyzer;
 
   constructor(buildAnalyzer: BuildAnalyzer) {
@@ -56,17 +56,13 @@ class ResolveTransform extends Transform {
     this._buildAnalyzer = buildAnalyzer;
   }
 
-  _transform(
-      file: File,
-      _encoding: string,
-      callback: (error?: Error, data?: File) => void): void {
-    try {
-      this._buildAnalyzer.resolveFile(file);
-    } catch (err) {
-      callback(err);
-      return;
-    }
-    callback(null, file);
+  protected async *
+      _transformIter(files: AsyncIterable<File>): AsyncIterable<File> {
+    for
+      await(const file of files) {
+        this._buildAnalyzer.resolveFile(file);
+        yield file;
+      }
   }
 }
 
@@ -82,7 +78,7 @@ class ResolveTransform extends Transform {
  * source stream will remain paused until the user is ready to start the stream
  * themselves.
  */
-class AnalyzeTransform extends Transform {
+class AnalyzeTransform extends AsyncTransformStream<File, File> {
   private _buildAnalyzer: BuildAnalyzer;
 
   constructor(buildAnalyzer: BuildAnalyzer) {
@@ -94,19 +90,13 @@ class AnalyzeTransform extends Transform {
     this._buildAnalyzer = buildAnalyzer;
   }
 
-  _transform(
-      file: File,
-      _encoding: string,
-      callback: (error?: Error, data?: File) => void): void {
-    (async() => {
-      try {
+  protected async *
+      _transformIter(files: AsyncIterable<File>): AsyncIterable<File> {
+    for
+      await(const file of files) {
         await this._buildAnalyzer.analyzeFile(file);
-      } catch (err) {
-        callback(err);
-        return;
+        yield file;
       }
-      callback(null, file);
-    })();
   }
 }
 
