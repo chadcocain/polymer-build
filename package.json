@@ -9,7 +9,8 @@
     "build": "gulp build",
     "test": "gulp lint test",
     "prepublishOnly": "npm test",
-    "format": "find src/ -iname '*.ts' -o -iname '*.js' | xargs clang-format --style=file -i"
+    "format": "find src/ -iname '*.ts' -o -iname '*.js' | xargs clang-format --style=file -i",
+    "test:watch": "watchy -w src/ -- npm test --loglevel=silent"
   },
   "repository": {
     "type": "git",
@@ -62,6 +63,7 @@
     "temp": "^0.8.3",
     "tslint": "^4.4.2",
     "typescript": "^2.3.2",
-    "vinyl-fs-fake": "^1.1.0"
+    "vinyl-fs-fake": "^1.1.0",
+    "watchy": "^0.6.7"
   }
 }

@@ -175,7 +175,7 @@ export class BuildAnalyzer {
             .on('error',
                 (err: Error) =>
                     this._sourcesProcessingStream.emit('error', err))
-            .on('finish', this.onSourcesStreamComplete.bind(this))
+            .on('end', this.onSourcesStreamComplete.bind(this))
             .pipe(new AnalyzeTransform(this)) as any;
 
     // _dependenciesProcessingStream: Pipe the dependencies stream through...
@@ -280,7 +280,7 @@ export class BuildAnalyzer {
   private _done() {
     this.printWarnings();
     const allWarningCount = this.countWarningsByType();
-    const errorWarningCount = allWarningCount.get(Severity.ERROR);
+    const errorWarningCount = allWarningCount.get(Severity.ERROR)!;
 
     // If any ERROR warnings occurred, propagate an error in each build stream.
     if (errorWarningCount > 0) {
@@ -302,12 +302,12 @@ export class BuildAnalyzer {
     this._resolveDependencyAnalysis(this._dependencyAnalysis);
   }
 
-  getFile(filepath: string): File {
+  getFile(filepath: string): File|undefined {
     const url = urlFromPath(this.config.root, filepath);
     return this.getFileByUrl(url);
   }
 
-  getFileByUrl(url: string): File {
+  getFileByUrl(url: string): File|undefined {
     if (url.startsWith('/')) {
       url = url.substring(1);
     }
@@ -341,7 +341,7 @@ export class BuildAnalyzer {
     errorCountMap.set(Severity.ERROR, 0);
     for (const warning of this.warnings) {
       errorCountMap.set(
-          warning.severity, errorCountMap.get(warning.severity) + 1);
+          warning.severity, errorCountMap.get(warning.severity)! + 1);
     }
     return errorCountMap;
   }
