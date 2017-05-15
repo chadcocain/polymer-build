@@ -61,7 +61,7 @@
     "run-sequence": "^1.2.0",
     "sinon": "^1.17.6",
     "temp": "^0.8.3",
-    "tslint": "^4.4.2",
+    "tslint": "^5.2.0",
     "typescript": "^2.3.2",
     "vinyl-fs-fake": "^1.1.0",
     "watchy": "^0.6.7"

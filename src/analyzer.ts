@@ -359,7 +359,7 @@ export class BuildAnalyzer {
       throw new Error(`Unable to get document ${url}: ${message}`);
     }
 
-    doc.getWarnings({imported: true}).forEach(w => this.warnings.add(w));
+    doc.getWarnings({imported: true}).forEach((w) => this.warnings.add(w));
 
     const scripts = new Set<string>();
     const styles = new Set<string>();

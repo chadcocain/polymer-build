@@ -53,7 +53,7 @@ suite('BuildBundler', () => {
   let bundledStream: Stream;
   let files: Map<string, File>;
 
-  let setupTest = async(
+  const setupTest = async(
       projectOptions: ProjectOptions,
       bundlerOptions?: BuildBundlerOptions,
       transform?: FileTransform) => new Promise((resolve, reject) => {

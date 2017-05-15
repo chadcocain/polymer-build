@@ -203,7 +203,7 @@ export abstract class AsyncTransformStream<In, Out> extends Transform {
       callback(e);
     }
   }
-};
+}
 
 /**
  * A stream that takes file path strings, and outputs full Vinyl file objects

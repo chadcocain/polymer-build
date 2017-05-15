@@ -46,15 +46,15 @@ export class BuildBundler extends AsyncTransformStream<File, File> {
 
     this._buildAnalyzer = buildAnalyzer;
 
-    let {analyzer,
-         excludes,
-         inlineCss,
-         inlineScripts,
-         rewriteUrlsInTemplates,
-         sourcemaps,
-         stripComments,
-         strategy,
-         urlMapper} = options;
+    const {analyzer,
+           excludes,
+           inlineCss,
+           inlineScripts,
+           rewriteUrlsInTemplates,
+           sourcemaps,
+           stripComments,
+           urlMapper} = options;
+    let {strategy} = options;
 
     const urlLoader =
         new FileMapUrlLoader(this.files, analyzer || buildAnalyzer.analyzer);

@@ -137,8 +137,8 @@ suite('PolymerProject', () => {
         ],
       });
 
-      let sourcesStream = project.sources();
-      let dependencyStream = project.dependencies();
+      const sourcesStream = project.sources();
+      const dependencyStream = project.dependencies();
       sourcesStream.on('data', () => {});
       dependencyStream.on('data', () => {});
       return Promise.all(

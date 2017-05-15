@@ -105,7 +105,7 @@ function getResourceTypeFromImport(importFeature: Import): ResourceType|
   // resources, so we can't guarentee that it's a script and should instead rely
   // on the default file-extension mapping.
   return getResourceTypeFromUrl(importFeature.url);
-};
+}
 
 /**
  * Create a PushManifestEntry from an analyzer Import.
@@ -149,7 +149,7 @@ async function generatePushManifestEntryForUrl(
   }
 
   return pushManifestEntries;
-};
+}
 
 
 /**
