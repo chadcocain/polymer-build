@@ -52,7 +52,7 @@ export class BaseTagUpdater extends stream.Transform {
     }
 
     const parsed = parse5.parse(contents, {locationInfo: true});
-    let base = dom5.query(parsed, baseMatcher);
+    const base = dom5.query(parsed, baseMatcher);
     if (!base || dom5.getAttribute(base, 'href') === this.newHref) {
       callback(null, file);
       return;

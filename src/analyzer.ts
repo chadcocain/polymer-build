@@ -13,17 +13,17 @@
  */
 
 import * as path from 'path';
+import * as logging from 'plylog';
 import {Analyzer, Document, Severity, UrlLoader, Warning, WarningPrinter} from 'polymer-analyzer';
+import {parseUrl} from 'polymer-analyzer/lib/core/utils';
+import {ProjectConfig} from 'polymer-project-config';
 import {PassThrough, Transform} from 'stream';
+import {src as vinylSrc} from 'vinyl-fs';
+
+import {pathFromUrl, urlFromPath} from './path-transformers';
+import {AsyncTransformStream, VinylReaderTransform} from './streams';
 
 import File = require('vinyl');
-import {src as vinylSrc} from 'vinyl-fs';
-import {parseUrl} from 'polymer-analyzer/lib/core/utils';
-import * as logging from 'plylog';
-import {ProjectConfig} from 'polymer-project-config';
-
-import {VinylReaderTransform, AsyncTransformStream} from './streams';
-import {urlFromPath, pathFromUrl} from './path-transformers';
 
 const logger = logging.getLogger('cli.build.analyzer');
 

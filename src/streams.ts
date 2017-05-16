@@ -62,6 +62,7 @@ class AsyncQueue<V> implements AsyncIterable<V> {
   private blockedOn: Deferred<IteratorResult<V>>|undefined = undefined;
   backlog: Array<{value: IteratorResult<V>, deferred: Deferred<void>}> = [];
   private _closed = false;
+  private _finished = false;
 
   /**
    * Add the given value onto the queue.
@@ -76,6 +77,13 @@ class AsyncQueue<V> implements AsyncIterable<V> {
       throw new Error('Wrote to closed writable iterable');
     }
     return this._write({value, done: false});
+  }
+
+  /**
+   * True once the queue has been closed and all input has been read from it.
+   */
+  get finished() {
+    return this._finished;
   }
 
   /**
@@ -120,6 +128,8 @@ class AsyncQueue<V> implements AsyncIterable<V> {
         value = await this.blockedOn.promise;
       }
       if (value.done) {
+        this._finished = true;
+        this._write(value);
         return;
       } else {
         yield value.value;
@@ -132,10 +142,13 @@ class AsyncQueue<V> implements AsyncIterable<V> {
  * Implements `stream.Transform` via standard async iteration.
  *
  * The main advantage over implementing stream.Transform itself is that correct
- * error handling is built in and easy to get right, simply by using async/await
- * and
+ * error handling is built in and easy to get right, simply by using
+ * async/await.
+ *
+ * `In` and `Out` extend `{}` because they may not be `null`.
  */
-export abstract class AsyncTransformStream<In, Out> extends Transform {
+export abstract class AsyncTransformStream<In extends{}, Out extends{}> extends
+    Transform {
   private readonly _inputs = new AsyncQueue<In>();
 
   /**
@@ -163,10 +176,17 @@ export abstract class AsyncTransformStream<In, Out> extends Transform {
             this.push(value);
           }
       })();
-      // TODO(rictic): blindly drain the rest of the inputs if _transformIter
-      //     returns early?
       transformDonePromise.then(() => {
-        this._writingFinished.resolve(undefined);
+        if (this._inputs.finished) {
+          this._writingFinished.resolve(undefined);
+        } else {
+          this.emit(
+              'error',
+              new Error(
+                  `${this.constructor.name}` +
+                  ` did not consume all input while transforming.`));
+          this.push(null);
+        }
       }, (err) => this.emit('error', err));
     }
   }

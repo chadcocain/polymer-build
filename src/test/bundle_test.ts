@@ -31,14 +31,14 @@ import {AsyncTransformStream} from '../streams';
 
 const defaultRoot = path.resolve('test-fixtures/bundler-data');
 
-class FileTransform extends AsyncTransformStream<File, void> {
+class FileTransform extends AsyncTransformStream<File, {}> {
   transform: (s: FileTransform, f: File) => void;
   constructor(transform: (s: FileTransform, f: File) => void) {
     super({objectMode: true});
     this.transform = transform;
   }
   protected async *
-      _transformIter(files: AsyncIterable<File>): AsyncIterable<void> {
+      _transformIter(files: AsyncIterable<File>): AsyncIterable<{}> {
     for
       await(const file of files) {
         this.transform(this, file.clone());
