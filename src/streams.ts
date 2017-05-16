@@ -13,7 +13,7 @@
  */
 
 import {fs} from 'mz';
-import {Deferred} from 'polymer-analyzer/lib/utils';
+import {Deferred} from 'polymer-analyzer/lib/core/utils';
 import {PassThrough, Transform} from 'stream';
 
 import File = require('vinyl');
